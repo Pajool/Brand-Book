@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monolit Labs — Phase 0 / Strategy & Verbal Identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Barlow+Condensed:wght@600;700;800;900&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F5F2;
+    --ink:#080808;
+    --accent:#1E6AFF;
+    --muted:rgba(8,8,8,.60);
+    --faint:rgba(8,8,8,.40);
+    --line:rgba(8,8,8,.15);
+    --line-strong:rgba(8,8,8,.28);
+    --accent-wash:rgba(30,106,255,.07);
+    --display:"Barlow Condensed",system-ui,sans-serif;
+    --body:"Barlow",system-ui,sans-serif;
+    --mono:"DM Mono",ui-monospace,monospace;
+    --maxw:1180px;
+    --col:64ch;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--body);font-weight:400;font-size:17px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--accent);color:#fff}
+  a{color:var(--accent);text-decoration:none}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+  /* scroll progress */
+  .progress{position:fixed;inset:0 auto auto 0;height:2px;width:0;background:var(--accent);z-index:50;transition:width .08s linear}
+
+  /* sticky masthead bar */
+  .topbar{
+    position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;padding:.85rem clamp(1.25rem,5vw,4rem);
+    background:rgba(245,245,242,.82);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .mark{font-family:var(--display);font-weight:900;letter-spacing:.04em;text-transform:uppercase;font-size:1.05rem;line-height:1}
+  .mark b{color:var(--accent)}
+  .topmeta{font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1.25rem,5vw,4rem)}
+
+  /* ---------- COVER ---------- */
+  .cover{padding:clamp(3.5rem,11vw,8.5rem) 0 clamp(2.5rem,6vw,4.5rem);border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);margin:0 0 1.4rem}
+  .cover h1{
+    font-family:var(--display);font-weight:900;text-transform:uppercase;
+    font-size:clamp(4.2rem,18vw,12rem);line-height:.82;letter-spacing:-.01em;margin:0;
+  }
+  .cover h1 .yr{display:block;color:var(--faint)}
+  .cover .sub{
+    font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.02em;
+    font-size:clamp(1.3rem,4.4vw,2.4rem);line-height:1.02;margin:1.1rem 0 0;color:var(--ink);
+  }
+  .cover .sub em{font-style:normal;color:var(--accent)}
+
+  /* drawing title-block */
+  .titleblock{
+    margin-top:clamp(2.4rem,6vw,4rem);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    border:1px solid var(--line);border-bottom:none;
+  }
+  .tb{padding:.95rem 1.1rem;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+  .tb dt{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);margin:0 0 .45rem}
+  .tb dd{margin:0;font-family:var(--mono);font-size:.82rem;letter-spacing:.04em;color:var(--ink)}
+  .tb dd.on{color:var(--accent)}
+
+  .spine{
+    margin-top:clamp(2.4rem,6vw,4rem);max-width:24ch;
+    font-family:var(--display);font-weight:800;text-transform:none;
+    font-size:clamp(1.6rem,4.6vw,2.7rem);line-height:1.05;letter-spacing:.005em;
+  }
+  .spine b{color:var(--accent);font-weight:900}
+
+  /* ---------- PART HEADERS ---------- */
+  .part{padding:clamp(3.2rem,8vw,6rem) 0 0}
+  .part-head{display:flex;align-items:baseline;gap:1.1rem;border-top:2px solid var(--accent);padding-top:1.1rem;margin-bottom:clamp(2rem,5vw,3.4rem)}
+  .part-num{font-family:var(--mono);font-size:.8rem;letter-spacing:.18em;color:var(--accent)}
+  .part-name{font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.01em;font-size:clamp(2.2rem,7vw,4.4rem);line-height:.9;margin:0}
+
+  /* ---------- CONTENT BLOCKS (rail + body) ---------- */
+  .block{display:grid;grid-template-columns:minmax(0,210px) minmax(0,1fr);gap:clamp(1.2rem,4vw,3.2rem);
+    padding:clamp(1.6rem,4vw,2.6rem) 0;border-top:1px solid var(--line)}
+  .block:first-of-type{border-top:none}
+  .kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);position:sticky;top:5rem;align-self:start}
+  .kicker .n{color:var(--accent);display:block;margin-bottom:.4rem}
+  .body{max-width:var(--col)}
+  .body > :first-child{margin-top:0}
+  .body p{margin:0 0 1.05rem}
+  .body p:last-child{margin-bottom:0}
+  .lead{font-size:1.18rem;color:var(--ink)}
+  .muted{color:var(--muted)}
+
+  h3.h{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.02em;
+    font-size:1.5rem;line-height:1.05;margin:0 0 1rem;color:var(--ink)}
+
+  /* big pulled spine inside strategy */
+  .statement{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,4.4vw,2.5rem);line-height:1.04;letter-spacing:.004em;margin:0}
+  .statement b{color:var(--accent);font-weight:900}
+
+  /* quote / voice line */
+  blockquote.quote{margin:1.3rem 0 0;padding:.2rem 0 .2rem 1.4rem;border-left:2px solid var(--accent);
+    font-family:var(--body);font-style:italic;font-size:1.22rem;line-height:1.4;color:var(--ink)}
+
+  /* from -> to */
+  .shift{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:stretch;margin-top:.4rem}
+  .shift .cell{border:1px solid var(--line);padding:1.05rem 1.15rem}
+  .shift .cell .lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;margin:0 0 .6rem}
+  .shift .from .lbl{color:var(--faint)}
+  .shift .to{border-color:var(--line-strong);background:var(--accent-wash)}
+  .shift .to .lbl{color:var(--accent)}
+  .shift .cell p{margin:0;font-size:.98rem;line-height:1.5}
+  .shift .from p{color:var(--muted)}
+  .shift .arrow{align-self:center;font-family:var(--mono);color:var(--accent);font-size:1.1rem}
+
+  /* values / numbered principle list */
+  ol.stack{list-style:none;counter-reset:s;margin:0;padding:0}
+  ol.stack > li{counter-increment:s;position:relative;padding:1.1rem 0 1.1rem 3.1rem;border-top:1px solid var(--line)}
+  ol.stack > li:first-child{border-top:none;padding-top:.2rem}
+  ol.stack > li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:1.15rem;
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;color:var(--accent)}
+  ol.stack > li:first-child::before{top:.25rem}
+  .v-head{font-weight:600;color:var(--ink)}
+  .v-head b{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.02em;font-size:1.05em}
+  .trade{display:block;margin-top:.3rem;font-size:.92rem;color:var(--muted);font-style:italic}
+
+  /* spec (bad/good) inside principles */
+  .spec{margin-top:.7rem;border:1px solid var(--line)}
+  .spec .row{display:grid;grid-template-columns:auto 1fr;gap:.8rem;padding:.7rem .95rem;font-size:.96rem;line-height:1.45}
+  .spec .row.bad{border-bottom:1px solid var(--line);color:var(--muted)}
+  .spec .row.bad .gl{color:var(--faint)}
+  .spec .row.good .gl{color:var(--accent)}
+  .spec .gl{font-family:var(--mono);font-weight:500}
+
+  /* personality lists */
+  ul.plain{list-style:none;margin:0;padding:0}
+  ul.plain li{padding:.7rem 0;border-top:1px solid var(--line)}
+  ul.plain li:first-child{border-top:none;padding-top:0}
+  ul.plain li b{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--ink);font-size:1.02em}
+  .notlist{margin-top:1.1rem;font-size:.98rem;color:var(--muted)}
+  .notlist em{font-style:normal;color:var(--ink)}
+
+  /* vocabulary chips */
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.2rem 0 0}
+  .chip{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;padding:.34rem .6rem;border:1px solid var(--line-strong);color:var(--ink)}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;margin:.3rem 0 0;font-size:.95rem}
+  table th{font-family:var(--mono);font-weight:500;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;
+    text-align:left;color:var(--faint);padding:.55rem .9rem;border-bottom:1px solid var(--line-strong)}
+  table td{padding:.75rem .9rem;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+  table.split td:first-child{color:var(--muted);width:46%}
+  table.split td:first-child .strike{color:var(--faint)}
+  table.split td:last-child{color:var(--ink)}
+  table.split td:last-child::before{content:"›  ";color:var(--accent);font-family:var(--mono)}
+  table.ban td:first-child{font-family:var(--mono);font-size:.86rem;color:var(--ink);width:42%}
+  table.ban td:last-child{color:var(--muted)}
+
+  /* tone list */
+  dl.tones{margin:.2rem 0 0;display:grid;gap:0}
+  dl.tones .t{display:grid;grid-template-columns:minmax(0,150px) 1fr;gap:1rem;padding:.7rem 0;border-top:1px solid var(--line)}
+  dl.tones .t:first-child{border-top:none;padding-top:.1rem}
+  dl.tones dt{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0}
+  dl.tones dd{margin:0;font-size:.96rem;color:var(--muted)}
+
+  /* specimens (worked examples) */
+  .specimens{display:grid;gap:.9rem;margin:.2rem 0 0}
+  .specimen{border:1px solid var(--line);border-left:2px solid var(--accent);padding:.85rem 1.05rem}
+  .specimen .sl{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  .specimen .sx{margin:0;font-family:var(--body);font-style:italic;font-size:1.06rem;line-height:1.4;color:var(--ink)}
+  .specimen .sx span{display:block}
+
+  /* footer */
+  .colophon{border-top:2px solid var(--accent);margin-top:clamp(3rem,8vw,6rem);padding:clamp(2.4rem,6vw,4rem) 0 clamp(3rem,8vw,5rem)}
+  .colophon .big{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(1.8rem,6vw,3.4rem);line-height:.92;margin:0 0 1.4rem}
+  .colophon .big b{color:var(--accent)}
+  .colrow{display:flex;flex-wrap:wrap;gap:.5rem 2rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+
+  /* reveal animation */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* responsive */
+  @media (max-width:760px){
+    body{font-size:16px}
+    .block{grid-template-columns:1fr;gap:.7rem;padding:1.4rem 0}
+    .kicker{position:static;top:auto}
+    .shift{grid-template-columns:1fr}
+    .shift .arrow{transform:rotate(90deg);justify-self:start;padding:.1rem 0}
+    dl.tones .t{grid-template-columns:1fr;gap:.2rem}
+    table.split td:first-child{width:auto}
+    .topmeta{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    .progress{transition:none}
+    html{scroll-behavior:auto}
+  }
+  @media print{
+    .topbar,.progress{display:none}
+    body{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+    .block{break-inside:avoid}
+  }
+  html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="topbar">
+  <div class="mark">MONOLIT<b>.</b>LABS</div>
+  <div class="topmeta">Phase 00 — Brand System</div>
+</header>
+
+<main class="wrap">
+
+  <!-- COVER -->
+  <section class="cover reveal">
+    <p class="eyebrow">Monolit Labs — Brand System</p>
+    <h1>Phase<span class="yr">Zero</span></h1>
+    <p class="sub">Strategy, Positioning &amp; <em>Verbal Identity</em></p>
+
+    <dl class="titleblock">
+      <div class="tb"><dt>Brand</dt><dd>Monolit Labs</dd></div>
+      <div class="tb"><dt>Phase</dt><dd>00 / Strategy</dd></div>
+      <div class="tb"><dt>Issued</dt><dd>23 Jun 2026</dd></div>
+      <div class="tb"><dt>Deliverables</dt><dd>02 of 02</dd></div>
+      <div class="tb"><dt>Status</dt><dd class="on">Complete</dd></div>
+      <div class="tb"><dt>Next</dt><dd>Phase 01 — Visual</dd></div>
+    </dl>
+
+    <p class="spine">We build operational systems our clients <b>own</b> — engineered to last like architecture, not bolted on like a hack.</p>
+  </section>
+
+  <!-- PART 01 -->
+  <section class="part">
+    <div class="part-head reveal">
+      <span class="part-num">§ 01</span>
+      <h2 class="part-name">Brand Strategy</h2>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">01.1</span>The idea</div>
+      <div class="body">
+        <p class="statement">We build operational systems our clients <b>own</b> — engineered to last like architecture, not bolted on like a hack.</p>
+        <p style="margin-top:1.2rem">Most "AI" work in this market is rented and disposable: a fragile stack of automations that belongs to whoever set it up and breaks the day they walk away. We do the opposite. We build infrastructure that removes real work, that the client keeps and controls, and that's finished to the standard of the brand it sits behind.</p>
+        <p class="muted">Permanence is the product. Ownership is the promise. Craft is how both are kept.</p>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">01.2</span>Why we exist</div>
+      <div class="body">
+        <p>Premium businesses across Southeast Asia have perfected the front of house. The room, the service, the brand, the experience — considered down to the detail. The back of house tells a different story. It runs on spreadsheets, WhatsApp threads, and people remembering to do things.</p>
+        <p>The owner feels the gap. They want operations that match the standard of everything their customer already sees. But "real automation" arrives in one of two unappealing forms: enterprise software priced for enterprises, or a freelancer with a GPT wrapper and a lot of confidence. So they settle. They keep paying expensive people to do work a system should handle, and they tell themselves their operations are too specific to fix.</p>
+        <blockquote class="quote">I run a premium business on broken, manual operations — and everyone offering to fix it is selling hype.</blockquote>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">01.3</span>Where we play</div>
+      <div class="body">
+        <h3 class="h">Category &amp; difference</h3>
+        <p>We are an AI operations and digital systems agency for premium hospitality, property, and professional-services businesses in Southeast Asia.</p>
+        <p>The category is crowded with people who can wire up automations. Our difference is what happens after the wiring. <strong>You own what we build.</strong> Everyone else rents you a dependency — a stack that breaks the moment they stop maintaining it. We engineer systems you keep, run, and control without us.</p>
+        <p class="muted">The white space is wide because the category refuses to occupy it: SaaS gradients, "AI-powered" badges, chatbot mascots, copy promising to 10× your business by Friday. We move the other way — near-black, monospace, architectural restraint — because the way we look is the first proof that we hold a different standard. The brand is the argument before a word is read.</p>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">01.4</span>Who we're for</div>
+      <div class="body">
+        <p><strong>Primary —</strong> owner-operators and founders of premium, mid-sized SEA businesses: beach clubs and hospitality groups, property developers and agencies, notaries, law and accounting firms. They run real operations, feel the manual drag every day, and have already been burned by someone selling them "AI."</p>
+        <p><strong>Secondary —</strong> the GMs and operations leads who would live inside the systems day to day, and the consultants positioned to refer the right clients.</p>
+        <p class="muted" style="margin-bottom:.8rem">The entire job of the brand is one belief shift.</p>
+        <div class="shift">
+          <div class="cell from"><p class="lbl">From</p><p>"AI is hype, automation is cheap chatbots, and my operations are too messy to systematize anyway."</p></div>
+          <div class="arrow">→</div>
+          <div class="cell to"><p class="lbl">To</p><p>"Operational AI is real, ownable infrastructure — and done right, it's as considered as the rest of my brand. Monolit Labs builds systems I own, not gimmicks I rent."</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">01.5</span>What we believe</div>
+      <div class="body">
+        <p class="muted" style="margin-bottom:1.1rem">Principles we'd trade money to keep. Each one costs us something on purpose.</p>
+        <ol class="stack">
+          <li><span class="v-head"><b>Craft over speed.</b></span> We ship finished, considered work — even when a faster, uglier build would bill the same.<span class="trade">Trade-off: we lose the client who wants it cheap and yesterday.</span></li>
+          <li><span class="v-head"><b>Ownership over lock-in.</b></span> We build systems the client can run without us.<span class="trade">Trade-off: we give up the easy recurring revenue of renting them a dependency.</span></li>
+          <li><span class="v-head"><b>Truth over hype.</b></span> We say when AI is the wrong answer, and we walk when automation isn't the fix.<span class="trade">Trade-off: we turn down the upsell and the project that pays.</span></li>
+          <li><span class="v-head"><b>Depth over volume.</b></span> Few engagements, done completely.<span class="trade">Trade-off: we say no to good-on-paper clients who'd stretch us thin.</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">01.6</span>The line in the sand</div>
+      <div class="body">
+        <p>Everything traces back to the spine: systems our clients own, built to last. That commits us to things, and against things. We turn down work that is cheap, fast, and disposable. We refuse to rent a client a dependency dressed up as a service. We look and sound nothing like the category, deliberately.</p>
+        <p class="statement" style="font-size:clamp(1.4rem,3.6vw,2rem)">If a decision — a colour, a headline, a <b>"no"</b> — doesn't serve ownership, permanence, and craft, it doesn't get made.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 02 -->
+  <section class="part">
+    <div class="part-head reveal">
+      <span class="part-num">§ 02</span>
+      <h2 class="part-name">Verbal Identity</h2>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.1</span>The voice</div>
+      <div class="body">
+        <p class="statement">Plain, certain, and finished. We name the cost, state the fix, and <b>stop.</b></p>
+        <p class="muted" style="margin-top:1.1rem">Everything below is in service of that. If a sentence isn't plain, certain, or finished, it isn't ours yet.</p>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.2</span>Personality, on the page</div>
+      <div class="body">
+        <ul class="plain">
+          <li><b>Precise</b> — exact nouns, real numbers, specific outcomes. We never say "improved efficiency" when we can say "forty-minute check-ins, down to four."</li>
+          <li><b>Architectural</b> — load-bearing sentences. Structure over decoration. Nothing in the paragraph that isn't holding something up.</li>
+          <li><b>Confident</b> — statements, not pitches. We don't ask permission to be good, and we don't oversell what's already true.</li>
+          <li><b>Restrained</b> — we underwrite. One strong claim beats five weak ones. We cut before we add.</li>
+          <li><b>Considered</b> — every word earns its place. The brevity is the craft, not laziness.</li>
+        </ul>
+        <p class="notlist">And what that is <em>not</em>: not cold (precise, still human), not arrogant (confident, not superior), not breathless (no hype, no urgency), not cluttered (no buzzword stacks), not disposable (no trend-chasing slang that dates in a quarter).</p>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.3</span>Seven principles</div>
+      <div class="body">
+        <ol class="stack">
+          <li><span class="v-head"><b>Name the cost before the cure.</b></span> Lead with the pain the reader already feels, then the fix.
+            <div class="spec"><div class="row bad"><span class="gl">✗</span><span>We offer AI-powered operational automation solutions.</span></div><div class="row good"><span class="gl">✓</span><span>You're paying senior people to do work a system should handle. We build the system.</span></div></div>
+          </li>
+          <li><span class="v-head"><b>State outcomes as facts.</b></span> No "could," "might," "help you." Hedging reads as doubt.
+            <div class="spec"><div class="row bad"><span class="gl">✗</span><span>Our systems could help reduce your manual workload.</span></div><div class="row good"><span class="gl">✓</span><span>The system does the work. Your team stops.</span></div></div>
+          </li>
+          <li><span class="v-head"><b>Sell the result, not the technology.</b></span> We rarely say "AI." The buyer is suspicious of the word and indifferent to the mechanism — they care what disappears.
+            <div class="spec"><div class="row bad"><span class="gl">✗</span><span>We use cutting-edge AI and machine learning.</span></div><div class="row good"><span class="gl">✓</span><span>Bookings confirmed and logged, without anyone touching a keyboard.</span></div></div>
+          </li>
+          <li><span class="v-head"><b>Short carries the weight.</b></span> Default to short and declarative. Let a period land. Vary the rhythm with the occasional longer line — but never pad a sentence to fill space.</li>
+          <li><span class="v-head"><b>No hype, no urgency, no exclamation marks.</b></span> The confidence comes from the claim, not the punctuation. If a line needs an exclamation mark, the line is weak.</li>
+          <li><span class="v-head"><b>One claim per sentence. One idea per paragraph.</b></span> Restraint reads as certainty. A crowded sentence reads as a sales pitch.</li>
+          <li><span class="v-head"><b>Concrete over abstract.</b></span> Real nouns, real numbers, real outcomes. "Down from eleven steps to two" beats "dramatically streamlined."</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.4</span>Vocabulary</div>
+      <div class="body">
+        <h3 class="h">Words we reach for</h3>
+        <div class="chips">
+          <span class="chip">build</span><span class="chip">system</span><span class="chip">own</span><span class="chip">operations</span><span class="chip">infrastructure</span><span class="chip">engineered</span><span class="chip">remove</span><span class="chip">manual</span><span class="chip">precision</span><span class="chip">run</span><span class="chip">control</span><span class="chip">finished</span><span class="chip">last</span><span class="chip">keep</span>
+        </div>
+        <h3 class="h" style="margin-top:1.8rem">Words we ban, and why</h3>
+        <table class="ban">
+          <thead><tr><th>Banned</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>revolutionary, game-changing</td><td>Everyone claims it; it proves nothing.</td></tr>
+            <tr><td>cutting-edge, next-level</td><td>Hype filler. Describe the result instead.</td></tr>
+            <tr><td>"AI-powered" (as a badge)</td><td>The technology isn't the sell. The outcome is.</td></tr>
+            <tr><td>unlock, leverage, harness</td><td>Consultant-speak. Say the plain verb.</td></tr>
+            <tr><td>seamless, synergy, solutions</td><td>Soft words that mean nothing specific.</td></tr>
+            <tr><td>"in today's fast-paced world…"</td><td>Dead opener. Cut it and start at the point.</td></tr>
+            <tr><td>🚀 / exclamation marks</td><td>We don't shout. Periods do the work.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.5</span>Sentence mechanics</div>
+      <div class="body">
+        <ul class="plain">
+          <li><b>Length</b> — default 4–12 words. Break a long thought into two short ones.</li>
+          <li><b>Structure</b> — active voice, subject–verb–object. <span class="muted">The system does X. We build Y.</span></li>
+          <li><b>Punctuation</b> — periods do the work. An em dash for a sharp turn. No exclamation marks; semicolons rarely.</li>
+          <li><b>Case</b> — sentence case in body copy. The display type carries the visual weight, so the words never need to shout in caps to feel strong.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.6</span>Tone by context</div>
+      <div class="body">
+        <p class="muted" style="margin-bottom:.9rem">The voice is constant. The tone flexes — same person, different temperature.</p>
+        <dl class="tones">
+          <div class="t"><dt>Homepage</dt><dd>Coldest, sharpest, most certain. Headlines name the cost.</dd></div>
+          <div class="t"><dt>Sales / pitch</dt><dd>Warmer, still direct. Diagnose before you prescribe. Ask, then state.</dd></div>
+          <div class="t"><dt>Proposal</dt><dd>Precise and structured. Scope, numbers, and ownership stated plainly. The work sells; the copy doesn't.</dd></div>
+          <div class="t"><dt>Onboarding</dt><dd>Clear and instructional, ego removed. Plain steps, no flourish.</dd></div>
+          <div class="t"><dt>Bad news</dt><dd>Respectful and brief. Say no cleanly, say why, don't over-apologise.</dd></div>
+          <div class="t"><dt>Social</dt><dd>One hard idea per post. A flat statement that lands.</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.7</span>Worked examples</div>
+      <div class="body">
+        <div class="specimens">
+          <div class="specimen"><p class="sl">Homepage hero</p><p class="sx">Operational systems you own. Built to last like architecture.</p></div>
+          <div class="specimen"><p class="sl">Sub-headline</p><p class="sx">AI operations for premium hospitality, property, and professional-services businesses across Southeast Asia.</p></div>
+          <div class="specimen"><p class="sl">About line</p><p class="sx">We build the operational backbone premium businesses pretend they already have.</p></div>
+          <div class="specimen"><p class="sl">Cold outreach — first line</p><p class="sx">Your front of house is immaculate. Your back office runs on WhatsApp. We fix the second part.</p></div>
+          <div class="specimen"><p class="sl">Proposal opener</p><p class="sx">This document scopes a system you will own and run without us. Below: what it removes, what it costs, and what you keep.</p></div>
+          <div class="specimen"><p class="sl">Pricing framing</p><p class="sx">You're not buying a subscription. You're buying infrastructure — paid once, yours to keep.</p></div>
+          <div class="specimen"><p class="sl">Decline email</p><p class="sx">This isn't a fit, and I'd rather tell you now than bill you to find out. From what you described, automation isn't the right answer — a simpler fix will serve you better. If that changes, come back.</p></div>
+          <div class="specimen"><p class="sl">Social caption</p><p class="sx"><span>Every manual task is a person you're paying to be a database.</span><span>We build the database.</span></p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.8</span>Do / Don't</div>
+      <div class="body">
+        <table class="split">
+          <thead><tr><th>Don't write</th><th>Write</th></tr></thead>
+          <tbody>
+            <tr><td><span class="strike">Leverage cutting-edge AI to streamline your operations.</span></td><td>We remove the manual work running your business.</td></tr>
+            <tr><td><span class="strike">Our innovative solutions are truly game-changing.</span></td><td>You own the system. It runs without us.</td></tr>
+            <tr><td><span class="strike">We could potentially help improve your efficiency.</span></td><td>Forty-minute check-ins, down to four.</td></tr>
+            <tr><td><span class="strike">Unlock your business's full potential today!</span></td><td>Stop paying people to do what software should.</td></tr>
+            <tr><td><span class="strike">In today's fast-paced world, automation is key.</span></td><td>Manual work doesn't scale. Systems do.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block reveal">
+      <div class="kicker"><span class="n">02.9</span>The 10-second test</div>
+      <div class="body">
+        <p class="muted" style="margin-bottom:1rem">Hold any sentence against this before it ships.</p>
+        <ol class="stack">
+          <li>Does it name a real <strong>cost</strong> or a real <strong>outcome</strong> — not a vague benefit?</li>
+          <li>Could a competitor paste it on their site unchanged? If yes, cut it.</li>
+          <li>Is there a hedge — <em>could, might, help, hopefully</em>? Remove it.</li>
+          <li>Is there hype, urgency, or an exclamation mark? Remove it.</li>
+          <li>Did you say "AI" when you could have said what it <em>does</em>? Rewrite.</li>
+          <li>Can it be shorter? Cut until it can't.</li>
+        </ol>
+        <p style="margin-top:1.1rem">Passes all six? It sounds like <strong>Monolit Labs</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="colophon reveal">
+    <p class="big">Phase 0 complete.<br><b>Visual work can begin.</b></p>
+    <div class="colrow">
+      <span>Monolit Labs</span>
+      <span>Phase 00 — Strategy &amp; Verbal Identity</span>
+      <span>Issued 23 Jun 2026</span>
+      <span>Next: Phase 01 — Visual Identity</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // scroll progress
+  var bar=document.getElementById('progress');
+  function onScroll(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    var p=max>0?(h.scrollTop||document.body.scrollTop)/max:0;
+    bar.style.width=(p*100)+'%';
+  }
+  document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // reveal on scroll (respects reduced motion)
+  var rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!rm && 'IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{rootMargin:'0px 0px -8% 0px',threshold:.08});
+    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+  }
+</script>
+</body>
+</html>
